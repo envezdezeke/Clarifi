@@ -1,0 +1,618 @@
+[
+  {
+    "note": "Bb3",
+    "frequency": 233.08,
+    "octave": 3,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Long Bb",
+        "keys": ["L1", "L2", "L3", "R1", "R2", "R3", "LJ1", "LJ2", "LJ3", "LJ4"],
+        "difficulty": "beginner"
+      },
+      {
+        "id": "alt1",
+        "label": "Side Bb",
+        "keys": ["L1", "L2", "L3", "S1"],
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "alt2",
+        "label": "Bis Bb",
+        "keys": ["L1", "LA", "L2", "L3"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "B3",
+    "frequency": 246.94,
+    "octave": 3,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "R1", "R2", "R3", "LJ1", "LJ2", "LJ3"],
+        "difficulty": "beginner"
+      },
+      {
+        "id": "alt1",
+        "label": "Throat B",
+        "keys": ["L1", "L2", "L3"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "C4",
+    "frequency": 261.63,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "R1", "R2", "R3", "LJ1", "LJ2"],
+        "difficulty": "beginner"
+      },
+      {
+        "id": "alt1",
+        "label": "Throat C",
+        "keys": ["L1", "L2", "L3"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "C#4",
+    "frequency": 277.18,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "R1", "R2", "R3", "LJ1"],
+        "difficulty": "beginner"
+      },
+      {
+        "id": "alt1",
+        "label": "Throat Db alt",
+        "keys": ["L1", "L2", "L3", "LG#"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "Db4",
+    "frequency": 277.18,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "R1", "R2", "R3", "LJ1"],
+        "difficulty": "beginner"
+      },
+      {
+        "id": "alt1",
+        "label": "Throat Db alt",
+        "keys": ["L1", "L2", "L3", "LG#"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "D4",
+    "frequency": 293.66,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "R1", "R2", "R3"],
+        "difficulty": "beginner"
+      }
+    ]
+  },
+  {
+    "note": "Eb4",
+    "frequency": 311.13,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "R1", "R2", "R3", "RE"],
+        "difficulty": "beginner"
+      }
+    ]
+  },
+  {
+    "note": "E4",
+    "frequency": 329.63,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "R1", "R2"],
+        "difficulty": "beginner"
+      }
+    ]
+  },
+  {
+    "note": "F4",
+    "frequency": 349.23,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "R1"],
+        "difficulty": "beginner"
+      }
+    ]
+  },
+  {
+    "note": "F#4",
+    "frequency": 369.99,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "R1", "R4"],
+        "difficulty": "beginner"
+      },
+      {
+        "id": "alt1",
+        "label": "Side F#",
+        "keys": ["L1", "L2", "L3", "SE"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "Gb4",
+    "frequency": 369.99,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "R1", "R4"],
+        "difficulty": "beginner"
+      },
+      {
+        "id": "alt1",
+        "label": "Side Gb",
+        "keys": ["L1", "L2", "L3", "SE"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "G4",
+    "frequency": 392.00,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3"],
+        "difficulty": "beginner"
+      }
+    ]
+  },
+  {
+    "note": "Ab4",
+    "frequency": 415.30,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2", "L3", "LG#"],
+        "difficulty": "beginner"
+      }
+    ]
+  },
+  {
+    "note": "A4",
+    "frequency": 440.00,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1", "L2"],
+        "difficulty": "beginner"
+      }
+    ]
+  },
+  {
+    "note": "Bb4",
+    "frequency": 466.16,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Long Bb",
+        "keys": ["L1", "L2", "LJ1", "LJ2", "LJ3", "LJ4"],
+        "difficulty": "beginner"
+      },
+      {
+        "id": "alt1",
+        "label": "Side Bb",
+        "keys": ["L1", "L2", "S1"],
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "alt2",
+        "label": "Bis Bb",
+        "keys": ["L1", "LA", "L2"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "B4",
+    "frequency": 493.88,
+    "octave": 4,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["L1"],
+        "difficulty": "beginner"
+      }
+    ]
+  },
+  {
+    "note": "C5",
+    "frequency": 523.25,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1", "R2", "R3", "LJ1", "LJ2"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "C#5",
+    "frequency": 554.37,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1", "R2", "R3", "LJ1"],
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "alt1",
+        "label": "Alternate Db5",
+        "keys": ["LT", "L1", "L2", "L3", "LG#"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "Db5",
+    "frequency": 554.37,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1", "R2", "R3", "LJ1"],
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "alt1",
+        "label": "Alternate Db5",
+        "keys": ["LT", "L1", "L2", "L3", "LG#"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "D5",
+    "frequency": 587.33,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1", "R2", "R3"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "Eb5",
+    "frequency": 622.25,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1", "R2", "R3", "RE"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "E5",
+    "frequency": 659.25,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1", "R2"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "F5",
+    "frequency": 698.46,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "F#5",
+    "frequency": 739.99,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1", "R4"],
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "alt1",
+        "label": "Side F#5",
+        "keys": ["LT", "L1", "L2", "L3", "SE"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "Gb5",
+    "frequency": 739.99,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1", "R4"],
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "alt1",
+        "label": "Side Gb5",
+        "keys": ["LT", "L1", "L2", "L3", "SE"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "G5",
+    "frequency": 783.99,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "Ab5",
+    "frequency": 830.61,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "LG#"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "A5",
+    "frequency": 880.00,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "Bb5",
+    "frequency": 932.33,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "LJ1", "LJ2", "LJ3", "LJ4"],
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "alt1",
+        "label": "Side Bb5",
+        "keys": ["LT", "L1", "L2", "S1"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "B5",
+    "frequency": 987.77,
+    "octave": 5,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1"],
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "note": "C6",
+    "frequency": 1046.50,
+    "octave": 6,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1", "R2", "R3", "S2"],
+        "difficulty": "advanced"
+      },
+      {
+        "id": "alt1",
+        "label": "Altissimo C6 alt",
+        "keys": ["LT", "L2", "L3", "R1", "R2", "R3"],
+        "difficulty": "advanced"
+      }
+    ]
+  },
+  {
+    "note": "C#6",
+    "frequency": 1108.73,
+    "octave": 6,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "R1", "R2", "R3", "LJ1"],
+        "difficulty": "advanced"
+      }
+    ]
+  },
+  {
+    "note": "Db6",
+    "frequency": 1108.73,
+    "octave": 6,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "R1", "R2", "R3", "LJ1"],
+        "difficulty": "advanced"
+      }
+    ]
+  },
+  {
+    "note": "D6",
+    "frequency": 1174.66,
+    "octave": 6,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "R1", "R2"],
+        "difficulty": "advanced"
+      }
+    ]
+  },
+  {
+    "note": "Eb6",
+    "frequency": 1244.51,
+    "octave": 6,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "RE"],
+        "difficulty": "advanced"
+      }
+    ]
+  },
+  {
+    "note": "E6",
+    "frequency": 1318.51,
+    "octave": 6,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R2"],
+        "difficulty": "advanced"
+      }
+    ]
+  },
+  {
+    "note": "F6",
+    "frequency": 1396.91,
+    "octave": 6,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R1", "R5"],
+        "difficulty": "advanced"
+      }
+    ]
+  },
+  {
+    "note": "F#6",
+    "frequency": 1479.98,
+    "octave": 6,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R4", "R5"],
+        "difficulty": "advanced"
+      }
+    ]
+  },
+  {
+    "note": "Gb6",
+    "frequency": 1479.98,
+    "octave": 6,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R4", "R5"],
+        "difficulty": "advanced"
+      }
+    ]
+  },
+  {
+    "note": "G6",
+    "frequency": 1567.98,
+    "octave": 6,
+    "fingerings": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "keys": ["LT", "L1", "L2", "L3", "R5", "R6"],
+        "difficulty": "advanced"
+      }
+    ]
+  }
+]

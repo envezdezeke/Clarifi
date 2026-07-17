@@ -1,0 +1,30 @@
+{
+  "name": "clarinet-coach",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "@supabase/ssr": "^0.5.2",
+    "next": "14.2.5",
+    "pitchfinder": "^2.0.3",
+    "pdfjs-dist": "^4.6.82",
+    "react": "^18",
+    "react-dom": "^18",
+    "tone": "^15.0.4",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
+  }
+}

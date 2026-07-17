@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clarinet Coach</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS & RESET
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --bg:      #08080e;
+  --surface: #111118;
+  --elev:    #1a1a26;
+  --card:    #1e1e2e;
+  --border:  #2a2a40;
+  --border2: #3a3a56;
+  --accent:  #8b5cf6;
+  --accentH: #7c3aed;
+  --cyan:    #06b6d4;
+  --green:   #10b981;
+  --amber:   #f59e0b;
+  --red:     #ef4444;
+  --text:    #f1f5f9;
+  --text2:   #94a3b8;
+  --muted:   #64748b;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:var(--border2);cursor:pointer;width:100%}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════════════════ */
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+.view{display:none;padding:28px 0 56px}
+.view.active{display:block}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════════════════ */
+nav{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(8,8,14,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:100;display:flex;align-items:center}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;width:100%}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;cursor:pointer}
+.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{padding:6px 13px;border-radius:var(--r-md);font-size:14px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s}
+.nav-link:hover{color:var(--text)}
+.nav-link.active{background:var(--elev);color:var(--text)}
+.nav-cta{background:var(--accent);color:#fff;padding:7px 16px;border-radius:var(--r-md);font-size:14px;font-weight:600;margin-left:10px;transition:background .15s}
+.nav-cta:hover{background:var(--accentH)}
+
+/* ═══════════════════════════════════════════════════════════════
+   CARDS & PANELS
+═══════════════════════════════════════════════════════════════ */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;box-shadow:0 4px 20px rgba(0,0,0,.45)}
+.panel-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 18px;border-radius:var(--r-md);font-size:14px;font-weight:600;transition:all .15s;white-space:nowrap;cursor:pointer;border:none}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accentH);box-shadow:0 0 24px rgba(139,92,246,.35)}
+.btn-ghost{background:var(--elev);color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#059669}
+.btn-lg{padding:12px 28px;font-size:15px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ═══════════════════════════════════════════════════════════════
+   BADGES
+═══════════════════════════════════════════════════════════════ */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600}
+.badge-purple{background:rgba(139,92,246,.18);color:var(--accent);border:1px solid rgba(139,92,246,.35)}
+.badge-green{background:rgba(16,185,129,.18);color:var(--green);border:1px solid rgba(16,185,129,.35)}
+.badge-amber{background:rgba(245,158,11,.18);color:var(--amber);border:1px solid rgba(245,158,11,.35)}
+.badge-red{background:rgba(239,68,68,.18);color:var(--red);border:1px solid rgba(239,68,68,.35)}
+.badge-cyan{background:rgba(6,182,212,.18);color:var(--cyan);border:1px solid rgba(6,182,212,.35)}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROGRESS
+═══════════════════════════════════════════════════════════════ */
+.track{height:6px;background:var(--elev);border-radius:3px;overflow:hidden}.fill{height:100%;border-radius:3px;transition:width .3s ease}
+
+/* ═══════════════════════════════════════════════════════════════
+   BANNER ALERTS
+═══════════════════════════════════════════════════════════════ */
+.banner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:12px 18px;border-radius:var(--r-md);margin-bottom:18px;font-size:14px}
+.banner-purple{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.3)}
+.banner-green{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.28)}
+.banner-red{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);color:var(--red)}
+.banner-amber{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.28);color:var(--amber)}
+
+/* ═══════════════════════════════════════════════════════════════
+   UPLOAD ZONE
+═══════════════════════════════════════════════════════════════ */
+.upload-zone{min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:40px}
+.drop-target{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:100%;max-width:400px;min-height:180px;border:2px dashed var(--border2);border-radius:var(--r-lg);padding:32px;cursor:pointer;background:var(--elev);transition:all .2s;text-align:center}
+.drop-target:hover,.drop-target.drag{border-color:var(--accent);background:rgba(139,92,246,.06)}
+.drop-target input{display:none}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRACTICE GRID
+═══════════════════════════════════════════════════════════════ */
+.practice-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+@media(max-width:900px){.practice-grid{grid-template-columns:1fr}}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCORE PANEL
+═══════════════════════════════════════════════════════════════ */
+.score-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.cursor-bar{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-bottom:14px;background:var(--elev)}
+.cursor-cell{flex:1;padding:10px;text-align:center;border-right:1px solid var(--border)}
+.cursor-cell:last-child{border-right:none}
+.cursor-num{font-size:30px;font-weight:900;line-height:1}
+.cursor-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.measures-list{display:flex;flex-direction:column;gap:6px;max-height:360px;overflow-y:auto}
+.measure-row{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;transition:all .15s}
+.measure-row.current{border-color:var(--accent);background:rgba(139,92,246,.05)}
+.measure-num{width:34px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--elev);color:var(--muted);flex-shrink:0}
+.measure-row.current .measure-num{background:var(--accent);color:#fff}
+.events-row{display:flex;flex-wrap:wrap;gap:4px;padding:7px 8px;align-items:center}
+.event-chip{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 8px;border-radius:5px;background:var(--elev);min-width:40px;transition:all .1s}
+.event-chip.beat-active{background:var(--accent)}
+.event-chip .note{font-size:13px;font-weight:700}
+.event-chip .dur{font-size:9px;color:var(--muted)}
+.event-chip.beat-active .dur{color:rgba(255,255,255,.6)}
+.event-chip.rest-chip{background:rgba(100,116,139,.12)}
+.event-chip.rest-chip .note{color:var(--muted)}
+
+/* ═══════════════════════════════════════════════════════════════
+   NOW PLAYING INDICATOR
+═══════════════════════════════════════════════════════════════ */
+.now-playing{display:flex;align-items:center;gap:20px;padding:14px 20px;border-radius:var(--r-lg);background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(6,182,212,.06));border:1px solid rgba(139,92,246,.3);margin-top:16px;flex-wrap:wrap}
+.note-big{font-size:60px;font-weight:900;line-height:1;min-width:60px}
+.note-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+
+/* ═══════════════════════════════════════════════════════════════
+   PITCH METER
+═══════════════════════════════════════════════════════════════ */
+.pitch-note{font-size:72px;font-weight:900;line-height:1;letter-spacing:-.04em;text-align:center;min-height:72px;color:var(--border2);transition:color .1s}
+.pitch-note.active{color:var(--text)}
+.pitch-hz{font-size:12px;color:var(--muted);text-align:center;margin-top:5px;min-height:16px}
+.cent-bar-wrap{position:relative;margin-top:16px}
+.cent-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:5px}
+.cent-track{height:8px;background:var(--elev);border-radius:4px;position:relative}
+.cent-center{position:absolute;left:50%;top:-2px;width:2px;height:12px;background:var(--border2);transform:translateX(-50%);border-radius:1px}
+.cent-needle{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);transition:left .08s ease,background .12s;z-index:2}
+.cent-fill{position:absolute;top:0;height:100%;opacity:.22;border-radius:4px;transition:all .08s ease}
+.cent-value{text-align:center;font-size:12px;font-weight:700;margin-top:6px;min-height:16px}
+
+/* ═══════════════════════════════════════════════════════════════
+   TONE PANEL
+═══════════════════════════════════════════════════════════════ */
+.gauge-row{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.gauge-header{display:flex;justify-content:space-between;font-size:13px;color:var(--text2)}
+.gauge-val{font-weight:700}
+
+/* ═══════════════════════════════════════════════════════════════
+   TRANSPORT
+═══════════════════════════════════════════════════════════════ */
+.transport-btns{display:flex;gap:8px;margin-bottom:16px}
+.bpm-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.bpm-adj{width:26px;height:26px;border-radius:5px;background:var(--elev);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;cursor:pointer;color:var(--text)}
+.bpm-adj:hover{border-color:var(--border2)}
+.bpm-display{font-size:22px;font-weight:900;min-width:52px;text-align:center}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--elev);border-radius:var(--r-md);border:1px solid var(--border);margin-top:12px}
+.toggle-switch{width:42px;height:22px;border-radius:11px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle-knob{position:absolute;top:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s}
+
+/* ═══════════════════════════════════════════════════════════════
+   FEEDBACK REPORT
+═══════════════════════════════════════════════════════════════ */
+.score-rings{display:flex;gap:20px;flex-wrap:wrap}
+.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.ring-lbl{font-size:11px;color:var(--muted);text-align:center}
+.fb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:18px}
+.issue-item{display:flex;justify-content:space-between;align-items:center;padding:7px 11px;background:var(--elev);border-radius:var(--r-sm);gap:10px;margin-bottom:6px}
+.suggestion-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text2);line-height:1.5}
+.suggestion-item:last-child{border-bottom:none}
+.sug-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+.fb-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.fb-hero{display:flex;flex-wrap:wrap;gap:24px;align-items:center;padding:22px 24px;background:linear-gradient(135deg,rgba(139,92,246,.13),rgba(6,182,212,.06));border:1px solid rgba(139,92,246,.28);border-radius:var(--r-lg);margin-bottom:2px}
+
+/* ═══════════════════════════════════════════════════════════════
+   HISTORY
+═══════════════════════════════════════════════════════════════ */
+.history-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:20px}
+.history-card{display:flex;flex-direction:column;gap:12px}
+.session-header{display:flex;align-items:flex-start;gap:14px}
+.score-circle{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0}
+.session-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.sub-scores{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sub-score{text-align:center;padding:7px;background:var(--elev);border-radius:var(--r-sm)}
+.sub-score-val{font-size:18px;font-weight:800}
+.sub-score-lbl{font-size:11px;color:var(--muted);margin-top:1px}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOADING / SPINNER
+═══════════════════════════════════════════════════════════════ */
+.spinner{width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pulse-dot{width:8px;height:8px;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 6px transparent}}
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME VIEW
+═══════════════════════════════════════════════════════════════ */
+.hero{padding:80px 0 64px;text-align:center;position:relative;overflow:hidden}
+.glow1{position:absolute;top:-80px;left:30%;width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,.11) 0%,transparent 70%);pointer-events:none}
+.glow2{position:absolute;top:40px;right:20%;width:350px;height:350px;background:radial-gradient(circle,rgba(6,182,212,.07) 0%,transparent 70%);pointer-events:none}
+.hero h1{font-size:clamp(2.2rem,5.5vw,3.6rem);font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:20px;background:linear-gradient(135deg,var(--text) 40%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:18px;color:var(--text2);max-width:480px;margin:0 auto 36px;line-height:1.6}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;padding-bottom:64px}
+.feature-card{display:flex;flex-direction:column;gap:10px}
+.feature-card .icon{font-size:28px}
+.feature-card h3{font-size:16px;font-weight:700}
+.feature-card p{font-size:13px;color:var(--text2);line-height:1.5}
+.how-card{display:flex;flex-wrap:wrap;gap:28px;align-items:center;padding:36px 40px;border-radius:var(--r-lg);background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(6,182,212,.05));border:1px solid rgba(139,92,246,.28);margin-bottom:64px}
+.step-list{flex:1;min-width:220px;display:flex;flex-direction:column;gap:18px}
+.step{display:flex;gap:14px;align-items:flex-start}
+.step-num{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0}
+.step-title{font-weight:600;margin-bottom:2px}
+.step-desc{font-size:13px;color:var(--text2)}
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{text-align:center;padding:14px 10px}
+.stat-val{font-size:26px;font-weight:900;color:var(--accent)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:3px}
+</style>
+</head>
+<body style="padding-top:60px">
+
+<!-- ═══════════════════════════════════════════════════════ NAV -->
+<nav>
+  <div class="wrap nav-inner">
+    <div class="logo" onclick="navigate('home')">
+      <div class="logo-icon">🎵</div>
+      Clarinet Coach
+    </div>
+    <div class="nav-links">
+      <div class="nav-link" id="nav-home" onclick="navigate('home')">Home</div>
+      <div class="nav-link" id="nav-practice" onclick="navigate('practice')">Practice</div>
+      <div class="nav-link" id="nav-history" onclick="navigate('history')">History</div>
+      <div class="nav-cta btn" onclick="navigate('practice')">Start Session</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ HOME VIEW -->
+<div id="view-home" class="view active">
+<div class="wrap">
+  <div class="hero">
+    <div class="glow1"></div><div class="glow2"></div>
+    <div style="position:relative">
+      <span class="badge badge-purple" style="margin-bottom:20px">Bb Clarinet · Boehm System · Real-Time</span>
+      <h1>Practice smarter.<br>Sound better.</h1>
+      <p>Upload your sheet music, play along, and get instant feedback on pitch, tone, and timing — built specifically for clarinet.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary btn-lg" onclick="navigate('practice')">Start Practicing →</button>
+        <button class="btn btn-ghost btn-lg" onclick="navigate('history')">View Sessions</button>
+      </div>
+    </div>
+  </div>
+  <div class="features">
+    <div class="card feature-card"><div class="icon">🎯</div><h3>Real-Time Pitch Tracking</h3><p>YIN algorithm detects pitch to within cents. See exactly how sharp or flat every note lands.</p></div>
+    <div class="card feature-card"><div class="icon">🎼</div><h3>Score Following</h3><p>Upload a PDF and the beat clock follows along — highlighting expected notes measure by measure.</p></div>
+    <div class="card feature-card"><div class="icon">📊</div><h3>Clarinet-Specific Analysis</h3><p>Odd/even harmonic ratio, throat-tone detection, air support, and squeak alerts.</p></div>
+    <div class="card feature-card"><div class="icon">📈</div><h3>Session Reports</h3><p>Pitch accuracy, timing accuracy, and tone quality scores with prioritised suggestions.</p></div>
+  </div>
+  <div class="how-card">
+    <div style="flex:1;min-width:220px">
+      <span class="badge badge-purple" style="margin-bottom:14px">3 easy steps</span>
+      <h2 style="font-size:26px;font-weight:800;margin-bottom:10px">Get started in seconds</h2>
+      <p style="color:var(--text2);line-height:1.6;margin-bottom:22px">No calibration, no complicated setup. Your clarinet, a PDF, and your microphone.</p>
+      <button class="btn btn-primary" onclick="navigate('practice')">Open Practice Room →</button>
+    </div>
+    <div class="step-list">
+      <div class="step"><div class="step-num">1</div><div><div class="step-title">Upload your PDF sheet music</div><div class="step-desc">Gemini Vision parses every note and rest automatically</div></div></div>
+      <div class="step"><div class="step-num">2</div><div><div class="step-title">Set your tempo and press Play</div><div class="step-desc">The beat clock starts — play along with your score</div></div></div>
+      <div class="step"><div class="step-num">3</div><div><div class="step-title">Get your session report</div><div class="step-desc">Pitch issues, timing, and tone quality scored instantly</div></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PRACTICE VIEW -->
+<div id="view-practice" class="view">
+<div class="wrap">
+
+  <!-- Mic banner -->
+  <div id="mic-banner-off" class="banner banner-purple" style="display:flex">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:22px">🎙️</span>
+      <div><div style="font-weight:600">Microphone required</div><div style="font-size:13px;color:var(--text2)">Grant mic access to start real-time pitch analysis</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="startListening()">Start Listening</button>
+  </div>
+  <div id="mic-banner-on" class="banner banner-green" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="pulse-dot" style="background:var(--green);color:var(--green)"></span>
+      <span style="font-weight:600;color:var(--green)">Listening — microphone active</span>
+    </div>
+    <button class="btn btn-ghost" style="font-size:13px;padding:6px 14px" onclick="stopListening()">Stop Mic</button>
+  </div>
+  <div id="mic-banner-err" class="banner banner-red" style="display:none">
+    ⚠️ <span id="mic-err-text"></span>
+  </div>
+
+  <!-- Upload zone (shown before score is loaded) -->
+  <div id="upload-section">
+    <div class="card upload-zone">
+      <div style="text-align:center">
+        <div style="font-size:46px;margin-bottom:10px">🎼</div>
+        <h2 style="font-size:21px;font-weight:700;margin-bottom:6px">Upload Sheet Music</h2>
+        <p style="color:var(--text2);font-size:14px;max-width:300px">Drop a PDF of your clarinet part. Gemini Vision will parse every note automatically.</p>
+      </div>
+      <label id="drop-target" class="drop-target">
+        <input type="file" accept=".pdf" id="pdf-input" onchange="handleFileSelect(event)">
+        <div id="drop-inner">
+          <div style="font-size:30px">📄</div>
+          <div><div style="font-weight:600;margin-bottom:3px">Drag &amp; drop your PDF</div><div style="color:var(--muted);font-size:13px">or click to browse · max 10 pages</div></div>
+        </div>
+      </label>
+      <div id="parse-error" class="banner banner-red" style="display:none;max-width:400px;width:100%;justify-content:center"></div>
+    </div>
+  </div>
+
+  <!-- Practice panel (shown after score is loaded) -->
+  <div id="practice-section" style="display:none">
+    <div class="practice-grid">
+
+      <!-- LEFT: Score Panel -->
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="score-header">
+            <div>
+              <div style="font-weight:700;font-size:15px;margin-bottom:3px" id="score-title">Score</div>
+              <div style="font-size:12px;color:var(--muted)" id="score-meta"></div>
+            </div>
+            <div id="score-tempo-badge"></div>
+          </div>
+          <div class="cursor-bar">
+            <div class="cursor-cell">
+              <div class="cursor-lbl">Measure</div>
+              <div class="cursor-num" id="cursor-measure" style="color:var(--accent)">1</div>
+            </div>
+            <div class="cursor-cell">
+              <div class="cursor-lbl">Beat</div>
+              <div class="cursor-num" id="cursor-beat" style="color:var(--cyan)">1</div>
+            </div>
+            <div class="cursor-cell" style="flex:2">
+              <div class="cursor-lbl">Progress</div>
+              <div id="cursor-progress" style="font-size:14px;font-weight:600;margin-bottom:5px">1 / ?</div>
+              <div class="track" style="height:4px"><div class="fill" id="progress-fill" style="width:0%;background:var(--accent)"></div></div>
+            </div>
+          </div>
+          <div class="measures-list" id="measures-list"></div>
+          <div id="score-warnings" style="display:none;margin-top:10px;padding:8px 12px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:var(--r-md);font-size:12px;color:var(--amber)"></div>
+        </div>
+
+        <!-- Now playing (shown during playback) -->
+        <div id="now-playing" class="now-playing" style="display:none">
+          <div><div class="note-lbl">Expected</div><div class="note-big" id="expected-note" style="color:var(--accent)">—</div></div>
+          <div style="width:1px;height:50px;background:var(--border)"></div>
+          <div><div class="note-lbl">Detected</div><div class="note-big" id="detected-note" style="color:var(--cyan)">—</div></div>
+          <div style="flex:1;text-align:right">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Events</div>
+            <div style="font-size:22px;font-weight:800" id="event-count">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Controls + Audio -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <!-- Transport -->
+        <div class="card">
+          <div class="panel-label">Transport</div>
+          <div class="transport-btns">
+            <button id="btn-play" class="btn btn-primary" style="flex:1;padding:12px" onclick="handlePlay()">▶ Play</button>
+            <button id="btn-stop" class="btn btn-danger" style="flex:1;padding:12px;display:none" onclick="handleStop()">◼ Stop</button>
+            <button class="btn btn-ghost" style="padding:12px 16px" onclick="handleReset()" title="Reset to measure 1">↺</button>
+          </div>
+          <div class="bpm-row">
+            <span style="font-size:13px;color:var(--text2);font-weight:500">Tempo</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="bpm-adj" onclick="adjustBpm(-5)">−</button>
+              <div class="bpm-display" id="bpm-display">80</div>
+              <button class="bpm-adj" onclick="adjustBpm(5)">+</button>
+              <span style="font-size:12px;color:var(--muted)">BPM</span>
+            </div>
+          </div>
+          <input type="range" id="bpm-slider" min="20" max="300" value="80" oninput="setBpm(+this.value)">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px"><span>20</span><span>160</span><span>300</span></div>
+          <div class="toggle-row" style="margin-top:12px">
+            <div><div style="font-size:13px;font-weight:600">Bb Transposition</div><div style="font-size:11px;color:var(--muted);margin-top:2px">PDF is written clarinet pitch</div></div>
+            <div id="transp-toggle" class="toggle-switch" onclick="toggleTransposition()" style="background:var(--accent)">
+              <div class="toggle-knob" id="transp-knob" style="left:22px"></div>
+            </div>
+          </div>
+          <button class="btn btn-ghost" style="width:100%;margin-top:10px;font-size:13px" onclick="clearScore()">📄 Upload Different Score</button>
+        </div>
+
+        <!-- Pitch Meter -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div class="panel-label" style="margin:0">Live Pitch</div>
+            <div id="listen-badge" style="display:flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;background:rgba(100,116,139,.15);border:1px solid rgba(100,116,139,.3)">
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--muted)"></div>
+              <span style="font-size:12px;font-weight:600;color:var(--muted)">Off</span>
+            </div>
+          </div>
+          <div class="pitch-note" id="pitch-note">—</div>
+          <div class="pitch-hz" id="pitch-hz"></div>
+          <div class="cent-bar-wrap">
+            <div class="cent-labels"><span>♭ flat</span><span id="cent-center-lbl" style="color:var(--muted)">in tune</span><span>sharp ♯</span></div>
+            <div class="cent-track">
+              <div class="cent-center"></div>
+              <div class="cent-needle" id="cent-needle" style="left:50%;background:var(--muted)"></div>
+              <div class="cent-fill" id="cent-fill"></div>
+            </div>
+            <div class="cent-value" id="cent-value" style="color:var(--muted)">—</div>
+          </div>
+        </div>
+
+        <!-- Tone Panel -->
+        <div class="card">
+          <div class="panel-label">Tone Metrics</div>
+          <div id="tone-content">
+            <div style="text-align:center;padding:20px 0;color:var(--muted);font-size:14px">
+              <div style="font-size:32px;margin-bottom:8px">〰️</div>
+              Start listening to see tone analysis
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end right col -->
+    </div><!-- end practice-grid -->
+  </div><!-- end practice-section -->
+
+  <!-- Feedback section (shown after session) -->
+  <div id="feedback-section" style="display:none"></div>
+
+</div><!-- end wrap -->
+</div><!-- end practice view -->
+
+<!-- ═══════════════════════════════════════════════════════ HISTORY VIEW -->
+<div id="view-history" class="view">
+<div class="wrap">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">
+    <div><h1 style="font-size:24px;font-weight:800;margin-bottom:3px">Session History</h1><p style="color:var(--text2);font-size:14px">Your saved practice sessions.</p></div>
+    <button class="btn btn-primary" onclick="navigate('practice')">+ New Session</button>
+  </div>
+  <div id="history-content"></div>
+</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// PITCH MATH UTILITIES
+// ═══════════════════════════════════════════════════════════════════════════════
+const NOTE_FLAT  = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+const NOTE_SHARP = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const A4_HZ = 440, A4_MIDI = 69;
+
+function hzToMidi(hz) { return 12 * Math.log2(hz / A4_HZ) + A4_MIDI; }
+
+function midiToName(midi, flats = true) {
+  const r = Math.round(midi);
+  const oct = Math.floor((r - 12) / 12);
+  const semi = ((r % 12) + 12) % 12;
+  return `${(flats ? NOTE_FLAT : NOTE_SHARP)[semi]}${oct}`;
+}
+
+function hzToPitch(hz) {
+  if (!hz || hz < 30 || hz > 5000) return { hz: 0, note: '', cents: 0, isValid: false };
+  const midi = hzToMidi(hz);
+  const cents = (midi - Math.round(midi)) * 100;
+  return { hz, note: midiToName(midi), cents, isValid: true };
+}
+
+function noteToHz(name) {
+  const m = name.match(/^([A-G][#b]?)(-?\d)$/);
+  if (!m) return 0;
+  const semi = NOTE_FLAT.indexOf(m[1]) !== -1 ? NOTE_FLAT.indexOf(m[1]) : NOTE_SHARP.indexOf(m[1]);
+  if (semi === -1) return 0;
+  const midi = semi + 12 + parseInt(m[2]) * 12;
+  return A4_HZ * Math.pow(2, (midi - A4_MIDI) / 12);
+}
+
+function isEnharmonic(a, b) {
+  const ha = noteToHz(a), hb = noteToHz(b);
+  return ha > 0 && hb > 0 && Math.abs(ha - hb) < 0.01;
+}
+
+function writtenToSounding(w) {
+  const m = w.match(/^([A-G][#b]?)(-?\d)$/);
+  if (!m) return w;
+  const semi = NOTE_FLAT.indexOf(m[1]) !== -1 ? NOTE_FLAT.indexOf(m[1]) : NOTE_SHARP.indexOf(m[1]);
+  if (semi === -1) return w;
+  let s = semi - 2, oct = parseInt(m[2]);
+  if (s < 0) { s += 12; oct--; }
+  return `${NOTE_FLAT[s]}${oct}`;
+}
+
+function durationToBeats(dur, beatUnit = 4) {
+  const map = { whole:4, half:2, quarter:1, eighth:.5, sixteenth:.25, 'thirty-second':.125,
+    'dotted-half':3, 'dotted-quarter':1.5, 'dotted-eighth':.75 };
+  return (map[dur] ?? 1) * (4 / beatUnit);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// YIN PITCH DETECTION
+// ═══════════════════════════════════════════════════════════════════════════════
+function yinDetect(buf, sampleRate, threshold = 0.15) {
+  const N = buf.length, W = Math.floor(N / 2);
+  const d = new Float32Array(W);
+
+  // Difference function
+  for (let tau = 1; tau < W; tau++) {
+    let s = 0;
+    for (let i = 0; i < W; i++) { const diff = buf[i] - buf[i + tau]; s += diff * diff; }
+    d[tau] = s;
+  }
+
+  // Cumulative mean normalised difference
+  const cmnd = new Float32Array(W);
+  cmnd[0] = 1;
+  let sum = 0;
+  for (let tau = 1; tau < W; tau++) {
+    sum += d[tau];
+    cmnd[tau] = sum > 0 ? d[tau] * tau / sum : 1;
+  }
+
+  // First minimum below threshold + parabolic interpolation
+  for (let tau = 2; tau < W - 1; tau++) {
+    if (cmnd[tau] < threshold && cmnd[tau] <= cmnd[tau - 1]) {
+      while (tau + 1 < W - 1 && cmnd[tau + 1] < cmnd[tau]) tau++;
+      const a = cmnd[tau - 1], b = cmnd[tau], c = cmnd[tau + 1];
+      const denom = 2 * (2 * b - a - c);
+      const precise = denom !== 0 ? tau + (a - c) / denom : tau;
+      return sampleRate / precise;
+    }
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// AUDIO ENGINE
+// ═══════════════════════════════════════════════════════════════════════════════
+class AudioEngine {
+  constructor() {
+    this.ctx = null; this.stream = null; this.source = null;
+    this.scriptNode = null; this.toneAnalyser = null; this.onsetAnalyser = null;
+    this.latestPitch = null; this.latestMetrics = null;
+    this.rmsHistory = []; this.prevHFC = 0;
+    this.adaptiveMean = 0; this.adaptiveStd = 1; this.lastOnsetTime = 0;
+    this.flushTimer = null; this.onsetTimer = null;
+    this.onOnset = null; // callback(audioTime)
+  }
+
+  async start(stream) {
+    this.stream = stream;
+    this.ctx = new AudioContext({ sampleRate: 44100 });
+    this.source = this.ctx.createMediaStreamSource(stream);
+
+    // Pitch via ScriptProcessorNode (2048 samples ≈ 46ms)
+    this.scriptNode = this.ctx.createScriptProcessor(2048, 1, 1);
+    this.scriptNode.onaudioprocess = (e) => {
+      const buf = e.inputBuffer.getChannelData(0);
+      const rms = Math.sqrt(buf.reduce((s, x) => s + x * x, 0) / buf.length);
+      if (rms < 0.008) { this.latestPitch = hzToPitch(0); return; }
+      const hz = yinDetect(buf, 44100, 0.15);
+      this.latestPitch = hz ? hzToPitch(hz) : hzToPitch(0);
+    };
+    this.source.connect(this.scriptNode);
+    this.scriptNode.connect(this.ctx.destination);
+
+    // FFT analyser for tone metrics
+    this.toneAnalyser = this.ctx.createAnalyser();
+    this.toneAnalyser.fftSize = 2048;
+    this.toneAnalyser.smoothingTimeConstant = 0.5;
+    const toneSrc = this.ctx.createMediaStreamSource(stream);
+    toneSrc.connect(this.toneAnalyser);
+
+    // Smaller FFT for onset detection
+    this.onsetAnalyser = this.ctx.createAnalyser();
+    this.onsetAnalyser.fftSize = 1024;
+    const onsetSrc = this.ctx.createMediaStreamSource(stream);
+    onsetSrc.connect(this.onsetAnalyser);
+
+    // Poll tone metrics at 60ms
+    this.flushTimer = setInterval(() => this._analyzeTone(), 60);
+    // Poll onset at 30ms
+    this.onsetTimer = setInterval(() => this._detectOnset(), 30);
+  }
+
+  stop() {
+    clearInterval(this.flushTimer); clearInterval(this.onsetTimer);
+    this.scriptNode?.disconnect(); this.source?.disconnect();
+    this.toneAnalyser?.disconnect(); this.onsetAnalyser?.disconnect();
+    this.stream?.getTracks().forEach(t => t.stop());
+    this.ctx?.close();
+    this.ctx = null; this.latestPitch = null; this.latestMetrics = null;
+  }
+
+  _analyzeTone() {
+    if (!this.toneAnalyser) return;
+    const fData = new Float32Array(this.toneAnalyser.frequencyBinCount);
+    this.toneAnalyser.getFloatFrequencyData(fData);
+    const BIN_HZ = 44100 / 2048;
+    const mags = fData.map(db => Math.pow(10, db / 20));
+    const N = mags.length;
+    const eps = 1e-10;
+
+    // Spectral centroid (brightness)
+    let ws = 0, ms = 0;
+    for (let k = 0; k < N; k++) { ws += k * BIN_HZ * mags[k]; ms += mags[k]; }
+    const centroid = ms > 0 ? ws / ms : 0;
+    const brightness = Math.min(1, Math.max(0, (centroid - 200) / 7800));
+
+    // Spectral flatness (noisiness)
+    const logSum = mags.reduce((s, m) => s + Math.log(m + eps), 0);
+    const geoMean = Math.exp(logSum / N);
+    const arithMean = ms / N;
+    const noisiness = arithMean > 0 ? Math.min(1, geoMean / arithMean) : 0;
+
+    // Odd/even harmonic ratio
+    const fHz = this.latestPitch?.hz ?? 0;
+    let odd = 0, even = 0;
+    if (fHz > 0) {
+      for (let h = 1; h <= 10; h++) {
+        const bin = Math.round(fHz * h / BIN_HZ);
+        if (bin < N) { const e = mags[bin] ** 2; h % 2 !== 0 ? odd += e : even += e; }
+      }
+    }
+    const harmonicRatio = even > 0 ? odd / even : 1;
+
+    // RMS stability
+    const rms = Math.sqrt(mags.reduce((s, m) => s + m * m, 0) / N);
+    const dynamicsDb = 20 * Math.log10(rms + eps);
+    this.rmsHistory.push(rms);
+    if (this.rmsHistory.length > 9) this.rmsHistory.shift();
+    const mean = this.rmsHistory.reduce((a, b) => a + b, 0) / this.rmsHistory.length;
+    const variance = this.rmsHistory.reduce((s, r) => s + (r - mean) ** 2, 0) / this.rmsHistory.length;
+    const stability = 1 - Math.min(1, Math.sqrt(variance) / (mean + eps));
+
+    this.latestMetrics = { brightness, noisiness, harmonicRatio, stability, dynamicsDb };
+  }
+
+  _detectOnset() {
+    if (!this.onsetAnalyser || !this.ctx) return;
+    const fData = new Float32Array(this.onsetAnalyser.frequencyBinCount);
+    this.onsetAnalyser.getFloatFrequencyData(fData);
+    const mags = fData.map(db => Math.pow(10, db / 20));
+
+    let hfc = 0;
+    for (let k = 0; k < mags.length; k++) hfc += k * k * mags[k] * mags[k];
+
+    const alpha = 0.02;
+    this.adaptiveMean = (1 - alpha) * this.adaptiveMean + alpha * hfc;
+    this.adaptiveStd  = (1 - alpha) * this.adaptiveStd  + alpha * Math.abs(hfc - this.adaptiveMean);
+
+    const threshold = this.adaptiveMean + 1.5 * this.adaptiveStd;
+    const timeSinceLast = (this.ctx.currentTime - this.lastOnsetTime) * 1000;
+
+    if (hfc > threshold && hfc > this.prevHFC && timeSinceLast > 80) {
+      this.lastOnsetTime = this.ctx.currentTime;
+      if (this.onOnset) this.onOnset(this.ctx.currentTime);
+    }
+    this.prevHFC = hfc;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SCORE FOLLOWER (beat clock via AudioContext)
+// ═══════════════════════════════════════════════════════════════════════════════
+class ScoreFollower {
+  constructor() {
+    this.score = null; this.cursor = { measure: 1, beat: 1 };
+    this.bpm = 80; this.isPlaying = false;
+    this.nextBeatTime = 0; this.scheduledBeats = [];
+    this.timerID = null;
+    this.onCursorChange = null; // callback(cursor)
+    this.onBeat = null;         // callback(audioTime, cursor)
+    this._audioCtx = null;
+  }
+
+  setScore(score) { this.score = score; this.reset(); }
+  setBpm(bpm) { this.bpm = Math.max(20, Math.min(300, bpm)); }
+
+  start(audioCtx) {
+    if (!this.score) return;
+    this._audioCtx = audioCtx;
+    this.isPlaying = true;
+    this.nextBeatTime = audioCtx.currentTime + 0.05;
+    this._scheduler();
+  }
+
+  stop() {
+    this.isPlaying = false;
+    if (this.timerID) clearTimeout(this.timerID);
+    this.timerID = null;
+  }
+
+  reset() {
+    this.stop();
+    this.cursor = { measure: 1, beat: 1 };
+    this.scheduledBeats = [];
+    if (this.onCursorChange) this.onCursorChange({ ...this.cursor });
+  }
+
+  getExpectedNote() {
+    if (!this.score) return null;
+    const m = this.score.measures.find(m => m.number === this.cursor.measure);
+    if (!m) return null;
+    let beat = 1;
+    for (const ev of m.events) {
+      if (beat >= this.cursor.beat) return ev.type === 'note' ? ev.writtenPitch : null;
+      beat += durationToBeats(ev.duration, this.score.beatUnit);
+    }
+    return null;
+  }
+
+  // Find the closest scheduled beat to a given audio timestamp
+  findNearestBeat(audioTime) {
+    let best = null, minDelta = Infinity;
+    for (const b of this.scheduledBeats) {
+      const delta = Math.abs(audioTime - b.time) * 1000; // ms
+      if (delta < minDelta) { minDelta = delta; best = { ...b, deltaMs: delta }; }
+    }
+    return best; // { time, cursor, deltaMs }
+  }
+
+  _scheduler() {
+    if (!this.isPlaying || !this._audioCtx) return;
+    const AHEAD = 0.12; // seconds to schedule ahead
+    while (this.nextBeatTime < this._audioCtx.currentTime + AHEAD) {
+      const snap = { ...this.cursor };
+      this.scheduledBeats.push({ time: this.nextBeatTime, cursor: { ...snap } });
+      // Keep only recent beats (last 4 seconds worth)
+      while (this.scheduledBeats.length > 50) this.scheduledBeats.shift();
+      if (this.onBeat) this.onBeat(this.nextBeatTime, snap);
+      this._advance();
+      this.nextBeatTime += 60.0 / this.bpm;
+    }
+    this.timerID = setTimeout(() => this._scheduler(), 20);
+  }
+
+  _advance() {
+    if (!this.score) return;
+    const { beatsPerMeasure, measures } = this.score;
+    this.cursor.beat++;
+    if (this.cursor.beat > beatsPerMeasure) {
+      this.cursor.beat = 1;
+      this.cursor.measure++;
+      if (this.cursor.measure > measures.length) {
+        this.stop();
+        state.isPlaying = false;
+        return;
+      }
+    }
+    if (this.onCursorChange) this.onCursorChange({ ...this.cursor });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// COMPARISON ENGINE
+// ═══════════════════════════════════════════════════════════════════════════════
+function compareOnset(audioEngine, scoreFollower, useTransposition) {
+  const pitch = audioEngine.latestPitch;
+  const metrics = audioEngine.latestMetrics;
+  const audioTime = audioEngine.ctx?.currentTime ?? 0;
+  if (!pitch || !scoreFollower.score) return null;
+
+  const beat = scoreFollower.findNearestBeat(audioTime);
+  if (!beat) return null;
+
+  const cursor = beat.cursor;
+  const m = scoreFollower.score.measures.find(m => m.number === cursor.measure);
+  if (!m) return null;
+
+  // Find event at this beat
+  let runBeat = 1;
+  let expectedNote = null;
+  for (const ev of m.events) {
+    if (Math.abs(runBeat - cursor.beat) < 0.5) { expectedNote = ev; break; }
+    runBeat += durationToBeats(ev.duration, scoreFollower.score.beatUnit);
+  }
+  if (!expectedNote || expectedNote.type === 'rest') return null;
+
+  const writtenPitch = expectedNote.writtenPitch;
+  const soundingPitch = useTransposition ? writtenToSounding(writtenPitch) : writtenPitch;
+  const detected = pitch.isValid ? pitch.note : null;
+  const pitchCorrect = detected ? isEnharmonic(detected, soundingPitch) : false;
+  const deltaMs = beat.deltaMs ?? 200;
+
+  let timing = 'missed';
+  if (detected) {
+    if (deltaMs <= 100) timing = 'on-time';
+    else if (beat.time < audioTime) timing = 'late';
+    else timing = 'early';
+  }
+
+  const tm = metrics ?? { stability: 0, noisiness: 0, harmonicRatio: 1 };
+  const toneScore = detected
+    ? Math.min(1, tm.stability * 0.4 + (1 - tm.noisiness) * 0.4 + Math.min(tm.harmonicRatio / 5, 1) * 0.2)
+    : 0;
+
+  const isPickup = scoreFollower.score.measures[0]?.events.length < scoreFollower.score.beatsPerMeasure;
+
+  return {
+    id: Math.random().toString(36).slice(2),
+    timestamp: Date.now(),
+    measure: cursor.measure,
+    beat: cursor.beat,
+    expectedWrittenPitch: writtenPitch,
+    expectedSoundingPitch: soundingPitch,
+    detectedNote: pitchCorrect ? detected : (detected ? `${detected}*` : null),
+    centsDeviation: pitch.isValid ? pitch.cents : null,
+    timing: (detected && !pitchCorrect) ? 'missed' : timing,
+    toneScore,
+    isPickupMeasure: isPickup,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FEEDBACK ENGINE
+// ═══════════════════════════════════════════════════════════════════════════════
+const THROAT_TONES = ['Bb3','B3','C4','C#4','Db4'];
+
+function generateFeedback(events) {
+  const played  = events.filter(e => e.detectedNote && !e.isPickupMeasure);
+  const missed  = events.filter(e => !e.detectedNote && !e.isPickupMeasure);
+  const correct = played.filter(e => !e.detectedNote?.endsWith('*'));
+  const wrong   = played.filter(e => e.detectedNote?.endsWith('*'));
+
+  const pitchAccuracy = events.length > 0 ? Math.round((correct.length / events.length) * 100) : 100;
+
+  // Per-note deviation
+  const devMap = {};
+  for (const e of correct) {
+    if (e.centsDeviation == null) continue;
+    const k = e.expectedSoundingPitch;
+    if (!devMap[k]) devMap[k] = [];
+    devMap[k].push(e.centsDeviation);
+  }
+  const pitchIssues = [];
+  for (const [note, devs] of Object.entries(devMap)) {
+    if (devs.length < 2) continue;
+    const avg = devs.reduce((a, b) => a + b, 0) / devs.length;
+    if (Math.abs(avg) > 10) {
+      pitchIssues.push({
+        note, avgCentsDeviation: Math.round(avg),
+        direction: avg > 0 ? 'sharp' : 'flat',
+        occurrences: devs.length,
+        measures: [...new Set(events.filter(e => e.expectedSoundingPitch === note).map(e => e.measure))],
+      });
+    }
+  }
+  pitchIssues.sort((a, b) => Math.abs(b.avgCentsDeviation) - Math.abs(a.avgCentsDeviation));
+
+  const timedEvs = played.filter(e => e.timing !== 'missed');
+  const onTime = timedEvs.filter(e => e.timing === 'on-time').length;
+  const timingAccuracy = timedEvs.length > 0 ? Math.round((onTime / timedEvs.length) * 100) : 100;
+
+  const toneScores = played.map(e => e.toneScore).filter(s => s > 0);
+  const avgTone = toneScores.length ? toneScores.reduce((a, b) => a + b, 0) / toneScores.length : 1;
+  const toneQuality = Math.round(avgTone * 100);
+
+  const toneIssues = [];
+  const throatEvs = correct.filter(e => THROAT_TONES.includes(e.expectedSoundingPitch));
+  const weakThroat = throatEvs.filter(e => e.toneScore < 0.5);
+  if (weakThroat.length >= 2) toneIssues.push({
+    type: 'throat-tone', severity: weakThroat.length > 4 ? 'significant' : 'moderate',
+    description: 'Tone quality drops on throat tones (Bb3–Db4). These notes require adjusted embouchure pressure.',
+    measures: [...new Set(weakThroat.map(e => e.measure))],
+  });
+
+  const unstable = correct.filter(e => e.toneScore < 0.4);
+  if (unstable.length > correct.length * 0.3) toneIssues.push({
+    type: 'air', severity: 'moderate',
+    description: 'Inconsistent air support across multiple notes. Sustain steady airflow through each note.',
+    measures: [...new Set(unstable.map(e => e.measure))],
+  });
+
+  if (missed.length > events.length * 0.2) toneIssues.push({
+    type: 'articulation', severity: missed.length > events.length * 0.4 ? 'significant' : 'minor',
+    description: 'More than 20% of expected notes were not detected. Check tonguing clarity.',
+    measures: [...new Set(missed.map(e => e.measure))],
+  });
+
+  const suggestions = [];
+  if (pitchIssues.length) {
+    const w = pitchIssues[0];
+    suggestions.push(`Focus on ${w.note}: averaging ${Math.abs(w.avgCentsDeviation)}¢ ${w.direction}. Try drone tuning on this pitch.`);
+  }
+  if (timingAccuracy < 70) suggestions.push(`Practice with metronome at 50–60% tempo. Timing accuracy was ${timingAccuracy}%.`);
+  for (const i of toneIssues) suggestions.push(i.description);
+  if (!suggestions.length) suggestions.push('Strong session! Consider increasing tempo or working on dynamic contrast.');
+
+  return {
+    overallScore: Math.round(pitchAccuracy * 0.4 + timingAccuracy * 0.3 + toneQuality * 0.3),
+    pitchAccuracy, timingAccuracy, toneQuality,
+    pitchIssues: pitchIssues.slice(0, 5), toneIssues, suggestions,
+    notesPlayed: played.length, notesMissed: missed.length,
+    measuresAnalyzed: new Set(events.map(e => e.measure)).size,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SESSION HISTORY (localStorage)
+// ═══════════════════════════════════════════════════════════════════════════════
+function saveSessions(sessions) { localStorage.setItem('cc_sessions', JSON.stringify(sessions)); }
+function loadSessions() { try { return JSON.parse(localStorage.getItem('cc_sessions') || '[]'); } catch { return []; } }
+function saveSession(session) { const s = loadSessions(); s.unshift(session); if (s.length > 50) s.pop(); saveSessions(s); }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════════════════════════════════════════════════
+const audioEngine    = new AudioEngine();
+const scoreFollower  = new ScoreFollower();
+let state = {
+  view: 'home',
+  isListening: false,
+  isParsing: false,
+  parsedScore: null,
+  scoreFilename: null,
+  bpm: 80,
+  useTransposition: true,
+  isPlaying: false,
+  eventLog: [],
+  sessionStartTime: null,
+  sessionFeedback: null,
+  sessionDuration: 0,
+};
+
+// Wire onset → comparison
+audioEngine.onOnset = (audioTime) => {
+  if (!state.isPlaying || !state.parsedScore) return;
+  const event = compareOnset(audioEngine, scoreFollower, state.useTransposition);
+  if (event) { state.eventLog.push(event); updateEventCount(); }
+};
+
+// Wire cursor changes → UI
+scoreFollower.onCursorChange = (cursor) => {
+  state.isPlaying = scoreFollower.isPlaying;
+  updateCursor(cursor);
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PDF → IMAGE CONVERSION
+// ═══════════════════════════════════════════════════════════════════════════════
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+async function pdfToBase64Images(file) {
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  const images = [];
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p);
+    const vp = page.getViewport({ scale: 2 });
+    const canvas = document.createElement('canvas');
+    canvas.width = vp.width; canvas.height = vp.height;
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    images.push(canvas.toDataURL('image/png').split(',')[1]);
+  }
+  return images;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════════════════════
+function navigate(view) {
+  state.view = view;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(`view-${view}`).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const navEl = document.getElementById(`nav-${view}`);
+  if (navEl) navEl.classList.add('active');
+  if (view === 'history') renderHistory();
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MIC CONTROL
+// ═══════════════════════════════════════════════════════════════════════════════
+async function startListening() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, sampleRate: 44100 }
+    });
+    await audioEngine.start(stream);
+    state.isListening = true;
+    showMicBanner('on');
+    startRenderLoop();
+  } catch (e) {
+    showMicBanner('err', e.message ?? 'Microphone access denied');
+  }
+}
+
+function stopListening() {
+  if (state.isPlaying) handleStop();
+  audioEngine.stop();
+  state.isListening = false;
+  showMicBanner('off');
+}
+
+function showMicBanner(which, msg = '') {
+  document.getElementById('mic-banner-off').style.display = which === 'off' ? 'flex' : 'none';
+  document.getElementById('mic-banner-on').style.display  = which === 'on'  ? 'flex' : 'none';
+  document.getElementById('mic-banner-err').style.display = which === 'err' ? 'flex' : 'none';
+  if (msg) document.getElementById('mic-err-text').textContent = msg;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FILE HANDLING
+// ═══════════════════════════════════════════════════════════════════════════════
+const dropTarget = document.getElementById('drop-target');
+dropTarget.addEventListener('dragover', e => { e.preventDefault(); dropTarget.classList.add('drag'); });
+dropTarget.addEventListener('dragleave', () => dropTarget.classList.remove('drag'));
+dropTarget.addEventListener('drop', e => {
+  e.preventDefault(); dropTarget.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+});
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+}
+
+async function processFile(file) {
+  if (!file.name.toLowerCase().endsWith('.pdf')) {
+    showParseError('Please upload a PDF file.');
+    return;
+  }
+  showParseError('');
+  state.isParsing = true;
+  setDropInner(`<div class="spinner"></div><div style="color:var(--accent);font-weight:600">Parsing with Gemini Vision…</div><div style="color:var(--muted);font-size:13px">This takes 5–15 seconds</div>`);
+
+  try {
+    const pages = await pdfToBase64Images(file);
+    if (pages.length > 10) { showParseError('Maximum 10 pages supported.'); return; }
+
+    const res = await fetch('/api/parse-score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pages }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? 'Parse failed');
+
+    state.parsedScore = data;
+    state.scoreFilename = file.name.replace(/\.pdf$/i, '');
+    state.bpm = data.tempoExtracted ?? 80;
+    scoreFollower.setScore(data);
+    scoreFollower.setBpm(state.bpm);
+
+    showPracticeSection();
+    renderScore();
+  } catch (e) {
+    showParseError(e.message);
+    setDropInner(`<div style="font-size:30px">📄</div><div><div style="font-weight:600;margin-bottom:3px">Drag &amp; drop your PDF</div><div style="color:var(--muted);font-size:13px">or click to browse · max 10 pages</div></div>`);
+  } finally {
+    state.isParsing = false;
+  }
+}
+
+function setDropInner(html) { document.getElementById('drop-inner').innerHTML = html; }
+function showParseError(msg) {
+  const el = document.getElementById('parse-error');
+  el.style.display = msg ? 'flex' : 'none';
+  el.textContent = msg ? `⚠️ ${msg}` : '';
+}
+function showPracticeSection() {
+  document.getElementById('upload-section').style.display = 'none';
+  document.getElementById('practice-section').style.display = 'block';
+  document.getElementById('feedback-section').style.display = 'none';
+}
+function clearScore() {
+  state.parsedScore = null; state.scoreFilename = null;
+  scoreFollower.reset(); state.eventLog = []; state.sessionFeedback = null;
+  state.isPlaying = false;
+  document.getElementById('upload-section').style.display = 'block';
+  document.getElementById('practice-section').style.display = 'none';
+  document.getElementById('feedback-section').style.display = 'none';
+  document.getElementById('drop-inner').innerHTML = `<div style="font-size:30px">📄</div><div><div style="font-weight:600;margin-bottom:3px">Drag &amp; drop your PDF</div><div style="color:var(--muted);font-size:13px">or click to browse · max 10 pages</div></div>`;
+  document.getElementById('pdf-input').value = '';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SCORE RENDERING
+// ═══════════════════════════════════════════════════════════════════════════════
+const DUR_SYM = { whole:'𝅝', half:'♩♩', quarter:'♩', eighth:'♪', sixteenth:'♬',
+  'dotted-half':'♩.', 'dotted-quarter':'♩.', 'dotted-eighth':'♪.', 'thirty-second':'𝅘𝅥𝅰' };
+
+function renderScore() {
+  const s = state.parsedScore;
+  document.getElementById('score-title').textContent = state.scoreFilename ?? 'Score';
+  document.getElementById('score-meta').textContent = `${s.keySignature} · ${s.timeSignature} · ${s.measures.length} measures`;
+  document.getElementById('score-tempo-badge').innerHTML = s.tempoMarking
+    ? `<span class="badge badge-purple">${s.tempoMarking}</span>` : '';
+  document.getElementById('cursor-progress').textContent = `1 / ${s.measures.length}`;
+  document.getElementById('bpm-display').textContent = state.bpm;
+  document.getElementById('bpm-slider').value = state.bpm;
+
+  renderMeasures({ measure: 1, beat: 1 });
+
+  if (s.parseWarnings?.length) {
+    const el = document.getElementById('score-warnings');
+    el.style.display = 'block';
+    el.textContent = `⚠️ ${s.parseWarnings.length} parse warning(s): ${s.parseWarnings[0]}`;
+  }
+}
+
+function renderMeasures(cursor) {
+  const s = state.parsedScore;
+  if (!s) return;
+
+  // Show window of 5 measures around cursor
+  const start = Math.max(1, cursor.measure - 1);
+  const end = Math.min(s.measures.length, start + 4);
+  const visible = s.measures.filter(m => m.number >= start && m.number <= end);
+
+  let html = '';
+  for (const m of visible) {
+    const isCur = m.number === cursor.measure;
+    html += `<div class="measure-row${isCur ? ' current' : ''}">`;
+    html += `<div class="measure-num">${m.number}</div>`;
+    html += `<div class="events-row">`;
+    for (const ev of m.events) {
+      const isActive = isCur && ev.beat === cursor.beat;
+      const isRest = ev.type === 'rest';
+      html += `<div class="event-chip${isActive ? ' beat-active' : isRest ? ' rest-chip' : ''}">
+        <span class="note">${isRest ? '𝄽' : ev.writtenPitch}</span>
+        <span class="dur">${DUR_SYM[ev.duration] ?? '♩'}</span>
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+  document.getElementById('measures-list').innerHTML = html;
+
+  // Update cursor bar
+  document.getElementById('cursor-measure').textContent = cursor.measure;
+  document.getElementById('cursor-beat').textContent = cursor.beat;
+  document.getElementById('cursor-progress').textContent = `${cursor.measure} / ${s.measures.length}`;
+  document.getElementById('progress-fill').style.width = `${(cursor.measure / s.measures.length) * 100}%`;
+}
+
+function updateCursor(cursor) {
+  renderMeasures(cursor);
+  // Update expected note in now-playing
+  const expected = scoreFollower.getExpectedNote();
+  const expEl = document.getElementById('expected-note');
+  if (expEl) expEl.textContent = expected ?? '𝄽';
+}
+
+function updateEventCount() {
+  const el = document.getElementById('event-count');
+  if (el) el.textContent = state.eventLog.length;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TRANSPORT CONTROLS
+// ═══════════════════════════════════════════════════════════════════════════════
+function handlePlay() {
+  if (!state.parsedScore) return;
+  if (!state.isListening) { alert('Please start listening first (click "Start Listening" above).'); return; }
+  state.sessionFeedback = null;
+  state.eventLog = [];
+  state.sessionStartTime = Date.now();
+  state.isPlaying = true;
+  scoreFollower.reset();
+  scoreFollower.setBpm(state.bpm);
+  scoreFollower.start(audioEngine.ctx);
+  document.getElementById('btn-play').style.display = 'none';
+  document.getElementById('btn-stop').style.display = 'flex';
+  document.getElementById('now-playing').style.display = 'flex';
+}
+
+function handleStop() {
+  scoreFollower.stop();
+  state.isPlaying = false;
+  state.sessionDuration = state.sessionStartTime
+    ? Math.round((Date.now() - state.sessionStartTime) / 1000) : 0;
+  state.sessionFeedback = generateFeedback(state.eventLog);
+  document.getElementById('btn-play').style.display = 'flex';
+  document.getElementById('btn-stop').style.display = 'none';
+  document.getElementById('now-playing').style.display = 'none';
+  showFeedback();
+}
+
+function handleReset() {
+  if (state.isPlaying) handleStop();
+  scoreFollower.reset();
+  state.eventLog = []; state.sessionFeedback = null;
+  renderMeasures({ measure: 1, beat: 1 });
+}
+
+function adjustBpm(delta) { setBpm(state.bpm + delta); }
+function setBpm(val) {
+  state.bpm = Math.max(20, Math.min(300, val));
+  scoreFollower.setBpm(state.bpm);
+  document.getElementById('bpm-display').textContent = state.bpm;
+  document.getElementById('bpm-slider').value = state.bpm;
+}
+
+function toggleTransposition() {
+  state.useTransposition = !state.useTransposition;
+  const on = state.useTransposition;
+  document.getElementById('transp-toggle').style.background = on ? 'var(--accent)' : 'var(--elev)';
+  document.getElementById('transp-knob').style.left = on ? '22px' : '2px';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// REAL-TIME UI LOOP (requestAnimationFrame)
+// ═══════════════════════════════════════════════════════════════════════════════
+let rafID = null;
+function startRenderLoop() {
+  if (rafID) return;
+  function loop() {
+    updatePitchUI();
+    updateToneUI();
+    if (state.isPlaying) {
+      const note = scoreFollower.getExpectedNote();
+      const dnEl = document.getElementById('detected-note');
+      if (dnEl) dnEl.textContent = audioEngine.latestPitch?.isValid ? audioEngine.latestPitch.note : '—';
+    }
+    rafID = requestAnimationFrame(loop);
+  }
+  rafID = requestAnimationFrame(loop);
+}
+
+function updatePitchUI() {
+  const p = audioEngine.latestPitch;
+  const noteEl = document.getElementById('pitch-note');
+  const hzEl   = document.getElementById('pitch-hz');
+  const needleEl = document.getElementById('cent-needle');
+  const fillEl   = document.getElementById('cent-fill');
+  const valEl    = document.getElementById('cent-value');
+  const lblEl    = document.getElementById('cent-center-lbl');
+  const badgeEl  = document.getElementById('listen-badge');
+
+  if (!state.isListening) {
+    badgeEl.style.background = 'rgba(100,116,139,.15)';
+    badgeEl.style.borderColor = 'rgba(100,116,139,.3)';
+    badgeEl.innerHTML = `<div style="width:6px;height:6px;border-radius:50%;background:var(--muted)"></div><span style="font-size:12px;font-weight:600;color:var(--muted)">Off</span>`;
+    return;
+  } else {
+    badgeEl.style.background = 'rgba(16,185,129,.12)';
+    badgeEl.style.borderColor = 'rgba(16,185,129,.3)';
+    badgeEl.innerHTML = `<div style="width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;color:var(--green)" class="pulse-dot"></div><span style="font-size:12px;font-weight:600;color:var(--green)">Listening</span>`;
+  }
+
+  if (!p?.isValid) {
+    noteEl.textContent = '—'; noteEl.classList.remove('active');
+    hzEl.textContent = '';
+    needleEl.style.left = '50%'; needleEl.style.background = 'var(--muted)';
+    fillEl.style.width = '0'; valEl.textContent = '—'; valEl.style.color = 'var(--muted)';
+    lblEl.style.color = 'var(--muted)';
+    return;
+  }
+
+  noteEl.textContent = p.note; noteEl.classList.add('active');
+  hzEl.textContent = `${p.hz.toFixed(1)} Hz`;
+
+  const c = Math.max(-50, Math.min(50, p.cents));
+  const pct = ((c + 50) / 100) * 100;
+  const inTune = Math.abs(c) < 8;
+  const color = inTune ? 'var(--green)' : Math.abs(c) > 30 ? 'var(--red)' : 'var(--amber)';
+
+  needleEl.style.left = `${pct}%`;
+  needleEl.style.background = color;
+  needleEl.style.boxShadow = `0 0 8px ${color}`;
+
+  if (c >= 0) {
+    fillEl.style.left = '50%'; fillEl.style.width = `${pct - 50}%`;
+  } else {
+    fillEl.style.left = `${pct}%`; fillEl.style.width = `${50 - pct}%`;
+  }
+  fillEl.style.background = color;
+  valEl.textContent = `${c > 0 ? '+' : ''}${Math.round(c)}¢`;
+  valEl.style.color = color;
+  lblEl.style.color = inTune ? 'var(--green)' : 'var(--muted)';
+}
+
+function updateToneUI() {
+  const m = audioEngine.latestMetrics;
+  const el = document.getElementById('tone-content');
+  if (!m || !state.isListening) {
+    el.innerHTML = `<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:14px"><div style="font-size:32px;margin-bottom:8px">〰️</div>${state.isListening ? 'Play a note…' : 'Start listening to see tone analysis'}</div>`;
+    return;
+  }
+  const gauges = [
+    { label: 'Clarity',          val: Math.round((1 - m.noisiness) * 100), color: (1 - m.noisiness) > 0.65 ? 'var(--green)' : (1 - m.noisiness) < 0.35 ? 'var(--red)' : 'var(--amber)' },
+    { label: 'Harmonic Balance', val: Math.round(Math.min(1, m.harmonicRatio / 6) * 100), color: m.harmonicRatio > 2 ? 'var(--green)' : 'var(--amber)' },
+    { label: 'Stability',        val: Math.round(m.stability * 100), color: m.stability > 0.65 ? 'var(--green)' : m.stability < 0.35 ? 'var(--red)' : 'var(--amber)' },
+    { label: 'Brightness',       val: Math.round(m.brightness * 100), color: m.brightness > 0.7 ? 'var(--red)' : m.brightness < 0.2 ? 'var(--cyan)' : 'var(--accent)' },
+  ];
+  const volPct = Math.max(0, Math.min(100, ((m.dynamicsDb + 60) / 60) * 100));
+  el.innerHTML = gauges.map(g => `
+    <div class="gauge-row">
+      <div class="gauge-header"><span>${g.label}</span><span class="gauge-val" style="color:${g.color}">${g.val}%</span></div>
+      <div class="track"><div class="fill" style="width:${g.val}%;background:${g.color}"></div></div>
+    </div>
+  `).join('') + `
+    <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+      <div class="gauge-header" style="margin-bottom:5px"><span style="color:var(--text2)">Volume</span><span class="gauge-val">${Math.round(m.dynamicsDb)} dB</span></div>
+      <div class="track"><div class="fill" style="width:${volPct}%;background:${volPct > 85 ? 'var(--red)' : 'var(--cyan)'}"></div></div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FEEDBACK REPORT
+// ═══════════════════════════════════════════════════════════════════════════════
+function showFeedback() {
+  const fb = state.sessionFeedback;
+  if (!fb) return;
+
+  const overallColor = fb.overallScore >= 80 ? 'var(--green)' : fb.overallScore >= 60 ? 'var(--amber)' : 'var(--red)';
+  const mins = Math.floor(state.sessionDuration / 60);
+  const secs = state.sessionDuration % 60;
+
+  function ring(score, label, color) {
+    const r = 30, circ = 2 * Math.PI * r;
+    const dash = (score / 100) * circ;
+    return `<div class="ring-wrap">
+      <svg width="78" height="78" viewBox="0 0 78 78">
+        <circle cx="39" cy="39" r="${r}" fill="none" stroke="var(--elev)" stroke-width="6"/>
+        <circle cx="39" cy="39" r="${r}" fill="none" stroke="${color}" stroke-width="6"
+          stroke-dasharray="${dash} ${circ - dash}" stroke-dashoffset="${circ / 4}" stroke-linecap="round"/>
+        <text x="39" y="44" text-anchor="middle" fill="var(--text)" font-size="17" font-weight="900">${score}</text>
+      </svg>
+      <span class="ring-lbl">${label}</span>
+    </div>`;
+  }
+
+  const pitchIssuesHtml = fb.pitchIssues.length === 0
+    ? `<div style="color:var(--green);font-size:14px">✓ No significant pitch issues</div>`
+    : fb.pitchIssues.map(i => `
+      <div class="issue-item">
+        <div><span style="font-weight:700;margin-right:8px">${i.note}</span>
+          <span class="badge ${i.direction === 'sharp' ? 'badge-amber' : 'badge-cyan'}">${i.direction === 'sharp' ? '↑ sharp' : '↓ flat'}</span></div>
+        <div style="text-align:right"><div style="font-weight:700;color:${i.direction === 'sharp' ? 'var(--amber)' : 'var(--cyan)'}">${Math.abs(i.avgCentsDeviation)}¢</div>
+          <div style="font-size:11px;color:var(--muted)">×${i.occurrences}</div></div>
+      </div>`).join('');
+
+  const toneIssuesHtml = fb.toneIssues.length === 0
+    ? `<div style="color:var(--green);font-size:14px">✓ Tone quality looks good</div>`
+    : fb.toneIssues.map(i => `
+      <div style="padding:9px 11px;background:var(--elev);border-radius:var(--r-sm);border-left:3px solid ${i.severity === 'significant' ? 'var(--red)' : i.severity === 'moderate' ? 'var(--amber)' : 'var(--muted)'};margin-bottom:6px">
+        <div style="margin-bottom:4px"><span class="badge ${i.severity === 'significant' ? 'badge-red' : i.severity === 'moderate' ? 'badge-amber' : 'badge-cyan'}">${i.type}</span></div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.5">${i.description}</div>
+      </div>`).join('');
+
+  const suggestionsHtml = fb.suggestions.map((s, i) => `
+    <div class="suggestion-item">
+      <div class="sug-num" style="${i === 0 ? 'background:var(--accent)' : 'background:var(--elev);color:var(--muted);border:1px solid var(--border)'}">${i + 1}</div>
+      <div>${s}</div>
+    </div>`).join('');
+
+  const html = `
+    <div class="fb-hero">
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Session Complete</div>
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:6px">${state.scoreFilename ?? 'Free Practice'} · ${state.bpm} BPM</h2>
+        <div style="font-size:13px;color:var(--text2)">Duration: ${mins}m ${secs}s · ${fb.notesPlayed} played · ${fb.notesMissed} missed · ${fb.measuresAnalyzed} measures</div>
+      </div>
+      <div class="score-rings">
+        ${ring(fb.overallScore, 'Overall', overallColor)}
+        ${ring(fb.pitchAccuracy, 'Pitch', 'var(--cyan)')}
+        ${ring(fb.timingAccuracy, 'Timing', 'var(--amber)')}
+        ${ring(fb.toneQuality, 'Tone', 'var(--accent)')}
+      </div>
+    </div>
+    <div class="fb-grid">
+      <div class="card"><h3 style="font-size:14px;font-weight:700;margin-bottom:12px">Pitch Issues</h3>${pitchIssuesHtml}</div>
+      <div class="card"><h3 style="font-size:14px;font-weight:700;margin-bottom:12px">Tone Issues</h3>${toneIssuesHtml}</div>
+    </div>
+    ${fb.suggestions.length ? `<div class="card" style="margin-top:16px"><h3 style="font-size:14px;font-weight:700;margin-bottom:12px">Suggestions</h3>${suggestionsHtml}</div>` : ''}
+    <div id="save-msg" style="display:none;padding:9px 14px;border-radius:var(--r-md);font-size:14px;margin-top:12px"></div>
+    <div class="fb-actions">
+      <button class="btn btn-ghost" onclick="clearScore()">Start New Session</button>
+      <button class="btn btn-primary" onclick="saveSessionLocal()">💾 Save Session</button>
+    </div>`;
+
+  const fbSec = document.getElementById('feedback-section');
+  fbSec.innerHTML = html;
+  fbSec.style.display = 'block';
+  document.getElementById('practice-section').style.display = 'none';
+  fbSec.scrollIntoView({ behavior: 'smooth' });
+}
+
+function saveSessionLocal() {
+  const fb = state.sessionFeedback;
+  if (!fb) return;
+  saveSession({
+    id: Math.random().toString(36).slice(2),
+    createdAt: new Date().toISOString(),
+    durationSeconds: state.sessionDuration,
+    scoreTitle: state.scoreFilename,
+    effectiveBpm: state.bpm,
+    feedback: fb,
+    eventLog: state.eventLog,
+  });
+  const msgEl = document.getElementById('save-msg');
+  msgEl.style.display = 'block';
+  msgEl.style.background = 'rgba(16,185,129,.1)';
+  msgEl.style.border = '1px solid rgba(16,185,129,.3)';
+  msgEl.style.color = 'var(--green)';
+  msgEl.textContent = '✓ Session saved to local history.';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HISTORY VIEW
+// ═══════════════════════════════════════════════════════════════════════════════
+function renderHistory() {
+  const sessions = loadSessions();
+  const el = document.getElementById('history-content');
+
+  if (!sessions.length) {
+    el.innerHTML = `<div class="card" style="text-align:center;padding:56px 20px">
+      <div style="font-size:46px;margin-bottom:14px">🎵</div>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:8px">No sessions yet</h2>
+      <p style="color:var(--text2);font-size:14px;margin-bottom:22px">Complete a practice session and save it to see it here.</p>
+      <button class="btn btn-primary" onclick="navigate('practice')">Start Practicing →</button>
+    </div>`;
+    return;
+  }
+
+  const totalMins = Math.round(sessions.reduce((a, s) => a + s.durationSeconds, 0) / 60);
+  const avgScore = Math.round(sessions.reduce((a, s) => a + s.feedback.overallScore, 0) / sessions.length);
+
+  const statsHtml = `<div class="stat-strip">
+    ${[
+      { v: sessions.length, l: 'Total Sessions' },
+      { v: avgScore, l: 'Avg Score' },
+      { v: Math.round(sessions.reduce((a, s) => a + s.feedback.pitchAccuracy, 0) / sessions.length), l: 'Avg Pitch' },
+      { v: `${totalMins}m`, l: 'Total Practice' },
+    ].map(s => `<div class="card stat-card"><div class="stat-val">${s.v}</div><div class="stat-lbl">${s.l}</div></div>`).join('')}
+  </div>`;
+
+  const cardsHtml = sessions.map(s => {
+    const fb = s.feedback;
+    const date = new Date(s.createdAt);
+    const c = fb.overallScore >= 80 ? 'var(--green)' : fb.overallScore >= 60 ? 'var(--amber)' : 'var(--red)';
+    const mins = Math.floor(s.durationSeconds / 60), secs = s.durationSeconds % 60;
+    return `<div class="card history-card">
+      <div class="session-header">
+        <div class="score-circle" style="border:3px solid ${c};color:${c}">${fb.overallScore}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.scoreTitle ?? 'Free Practice'}</div>
+          <div class="session-meta">${date.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})} · ${date.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})} · ${mins}m${secs}s · ${s.effectiveBpm} BPM</div>
+        </div>
+      </div>
+      <div class="sub-scores">
+        <div class="sub-score"><div class="sub-score-val" style="color:var(--cyan)">${fb.pitchAccuracy}</div><div class="sub-score-lbl">Pitch</div></div>
+        <div class="sub-score"><div class="sub-score-val" style="color:var(--amber)">${fb.timingAccuracy}</div><div class="sub-score-lbl">Timing</div></div>
+        <div class="sub-score"><div class="sub-score-val" style="color:var(--accent)">${fb.toneQuality}</div><div class="sub-score-lbl">Tone</div></div>
+      </div>
+      <div style="font-size:13px;color:var(--text2)">🎵 ${fb.notesPlayed} played · ❌ ${fb.notesMissed} missed · 📄 ${fb.measuresAnalyzed} measures</div>
+      ${fb.suggestions[0] ? `<div style="padding:7px 10px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:var(--r-sm);font-size:12px;color:var(--text2);line-height:1.5">💡 ${fb.suggestions[0]}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  el.innerHTML = statsHtml + `<div class="history-grid">${cardsHtml}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════════════════
+navigate('home');
+</script>
+</body>
+</html>
